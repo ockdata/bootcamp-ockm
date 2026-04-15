@@ -8,6 +8,15 @@ build/
 # Environment
 .env
 .venv/
+.venv-*/
+venv/
+env/
+ENV/
+env-*/
+aulao-3-embeddings-e-vector-db/.chroma_lab/
+aulao-3-embeddings-e-vector-db/.hf_home/
+aulao-3-embeddings-e-vector-db/.jupyter_runtime/
+aulao-3-embeddings-e-vector-db/executed/
 
 # IDE
 .vscode/
