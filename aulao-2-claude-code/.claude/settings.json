@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 /Users/luisfelipegomesmolina/Documents/Github/bootcamp-ockm/scripts/tfsec_pre_hook.py",
+            "command": "python3 /Users/luisfelipegomesmolina/Documents/Github/bootcamp-ockm/aulao-2-claude-code/scripts/tfsec_pre_hook.py",
             "timeout": 30
           }
         ]
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 /Users/luisfelipegomesmolina/Documents/Github/bootcamp-ockm/scripts/changelog_post_hook.py",
+            "command": "python3 /Users/luisfelipegomesmolina/Documents/Github/bootcamp-ockm/aulao-2-claude-code/scripts/changelog_post_hook.py",
             "timeout": 10
           }
         ]

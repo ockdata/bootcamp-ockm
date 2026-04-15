@@ -5,7 +5,7 @@ description: 'Scaffolds a complete ETL job for the monorepo with Pydantic schema
 
 # Create ETL Job
 
-Cria um job ETL completo seguindo os padrões do monorepo. Vai além do `make init JOB=xxx` — gera código funcional com validação, retry, DLQ e infra.
+Cria um job ETL completo seguindo os padrões do aulão 1. Vai além do `make init JOB=xxx` — gera código funcional com validação, retry, DLQ e infra.
 
 ## Inputs esperados
 - `$ARGUMENTS` contém o nome do job (ex: `ingest_sales`)
@@ -14,9 +14,9 @@ Cria um job ETL completo seguindo os padrões do monorepo. Vai além do `make in
 ## Step 1: Entender o contexto
 
 Antes de gerar código, pesquise o codebase:
-1. Leia `etl-monorepo/jobs/job_template/main.py` para entender o template base
-2. Leia `etl-monorepo/jobs/job_template/config.yaml` para o formato de configuração
-3. Leia um job existente (se houver) em `etl-monorepo/jobs/` para entender padrões reais
+1. Leia `aulao-1-ia-em-producao/etl-monorepo/jobs/job_template/main.py` para entender o template base
+2. Leia `aulao-1-ia-em-producao/etl-monorepo/jobs/job_template/config.yaml` para o formato de configuração
+3. Leia um job existente (se houver) em `aulao-1-ia-em-producao/etl-monorepo/jobs/` para entender padrões reais
 4. Leia `schemas/` para entender os schemas Pydantic existentes
 5. Leia `shared/` para entender os módulos compartilhados disponíveis
 
@@ -24,7 +24,7 @@ Antes de gerar código, pesquise o codebase:
 
 Crie TODOS os arquivos abaixo. Não pule nenhum.
 
-### 2.1 Job principal: `etl-monorepo/jobs/{nome}/main.py`
+### 2.1 Job principal: `aulao-1-ia-em-producao/etl-monorepo/jobs/{nome}/main.py`
 
 Deve seguir este padrão:
 - Import dos módulos em `shared/` (bq, gcs, api_client)
@@ -39,7 +39,7 @@ Padrão obrigatório de logging — execute o script auxiliar para referência:
 python .claude/skills/create-etl-job/scripts/log_template.py {nome}
 ```
 
-### 2.2 Config: `etl-monorepo/jobs/{nome}/config.yaml`
+### 2.2 Config: `aulao-1-ia-em-producao/etl-monorepo/jobs/{nome}/config.yaml`
 
 ```yaml
 job_name: "{nome}"
@@ -64,7 +64,7 @@ retry:
 - Validators para regras de negócio (se aplicável)
 - Incluir exemplo de registro válido como docstring
 
-### 2.4 Terraform: `etl-monorepo/infra/job_{nome}.tf`
+### 2.4 Terraform: `aulao-1-ia-em-producao/etl-monorepo/infra/job_{nome}.tf`
 
 - Usar o módulo em `modules/cloud_run_job/`
 - Seguir o padrão dos outros job_*.tf existentes

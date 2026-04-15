@@ -10,7 +10,7 @@ Revisa a infraestrutura Terraform do monorepo ETL.
 
 ## Escopo de análise
 
-Foque nos arquivos em `etl-monorepo/infra/`:
+Foque nos arquivos em `aulao-1-ia-em-producao/etl-monorepo/infra/`:
 - `main.tf` — provider e backend
 - `variables.tf` — variáveis e locals
 - `iam.tf` — service accounts e IAM bindings
@@ -47,7 +47,7 @@ Foque nos arquivos em `etl-monorepo/infra/`:
 
 Se possível, execute:
 ```bash
-cd etl-monorepo/infra && terraform fmt -check -recursive && terraform validate
+cd aulao-1-ia-em-producao/etl-monorepo/infra && terraform fmt -check -recursive && terraform validate
 ```
 
 ## Output

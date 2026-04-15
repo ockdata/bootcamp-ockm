@@ -38,7 +38,7 @@ cat > CLAUDE.md << 'EOF'
 - Testes com pytest em `tests/` — mínimo: happy path + edge cases + DLQ
 
 ## Estrutura de jobs
-- Cada job em `etl-monorepo/jobs/{job_name}/` com `main.py` + `config.yaml`
+- Cada job em `aulao-1-ia-em-producao/etl-monorepo/jobs/{job_name}/` com `main.py` + `config.yaml`
 - Template base em `jobs/job_template/`
 - Scaffold via `make init JOB={nome}` (roda `scripts/init_job.py`)
 - Um Terraform file por job: `infra/job_{nome}.tf`
@@ -82,9 +82,9 @@ Cria um job ETL completo seguindo os padrões do monorepo. Vai além do `make in
 ## Step 1: Entender o contexto
 
 Antes de gerar código, pesquise o codebase:
-1. Leia `etl-monorepo/jobs/job_template/main.py` para entender o template base
-2. Leia `etl-monorepo/jobs/job_template/config.yaml` para o formato de configuração
-3. Leia um job existente (se houver) em `etl-monorepo/jobs/` para entender padrões reais
+1. Leia `aulao-1-ia-em-producao/etl-monorepo/jobs/job_template/main.py` para entender o template base
+2. Leia `aulao-1-ia-em-producao/etl-monorepo/jobs/job_template/config.yaml` para o formato de configuração
+3. Leia um job existente (se houver) em `aulao-1-ia-em-producao/etl-monorepo/jobs/` para entender padrões reais
 4. Leia `schemas/` para entender os schemas Pydantic existentes
 5. Leia `shared/` para entender os módulos compartilhados disponíveis
 
@@ -92,7 +92,7 @@ Antes de gerar código, pesquise o codebase:
 
 Crie TODOS os arquivos abaixo. Não pule nenhum.
 
-### 2.1 Job principal: `etl-monorepo/jobs/{nome}/main.py`
+### 2.1 Job principal: `aulao-1-ia-em-producao/etl-monorepo/jobs/{nome}/main.py`
 
 Deve seguir este padrão:
 - Import dos módulos em `shared/` (bq, gcs, api_client)
@@ -107,7 +107,7 @@ Padrão obrigatório de logging — execute o script auxiliar para referência:
 python .claude/skills/create-etl-job/scripts/log_template.py {nome}
 ```
 
-### 2.2 Config: `etl-monorepo/jobs/{nome}/config.yaml`
+### 2.2 Config: `aulao-1-ia-em-producao/etl-monorepo/jobs/{nome}/config.yaml`
 
 ```yaml
 job_name: "{nome}"
@@ -132,7 +132,7 @@ retry:
 - Validators para regras de negócio (se aplicável)
 - Incluir exemplo de registro válido como docstring
 
-### 2.4 Terraform: `etl-monorepo/infra/job_{nome}.tf`
+### 2.4 Terraform: `aulao-1-ia-em-producao/etl-monorepo/infra/job_{nome}.tf`
 
 - Usar o módulo em `modules/cloud_run_job/`
 - Seguir o padrão dos outros job_*.tf existentes
@@ -231,7 +231,7 @@ Revisa a infraestrutura Terraform do monorepo ETL.
 
 ## Escopo de análise
 
-Foque nos arquivos em `etl-monorepo/infra/`:
+Foque nos arquivos em `aulao-1-ia-em-producao/etl-monorepo/infra/`:
 - `main.tf` — provider e backend
 - `variables.tf` — variáveis e locals
 - `iam.tf` — service accounts e IAM bindings
@@ -268,7 +268,7 @@ Foque nos arquivos em `etl-monorepo/infra/`:
 
 Se possível, execute:
 ```bash
-cd etl-monorepo/infra && terraform fmt -check -recursive && terraform validate
+cd aulao-1-ia-em-producao/etl-monorepo/infra && terraform fmt -check -recursive && terraform validate
 ```
 
 ## Output
@@ -292,10 +292,10 @@ EOF
 # ============================================================
 # 5. MONOREPO NESTING: schema-audit
 # ============================================================
-echo "5/9  etl-monorepo/.claude/skills/schema-audit/SKILL.md"
-mkdir -p etl-monorepo/.claude/skills/schema-audit/references
+echo "5/9  aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/SKILL.md"
+mkdir -p aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/references
 
-cat > etl-monorepo/.claude/skills/schema-audit/SKILL.md << 'EOF'
+cat > aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/SKILL.md << 'EOF'
 ---
 name: schema-audit
 description: 'Audits all Pydantic schemas in the ETL monorepo for consistency, missing validations, type safety issues, and alignment with BigQuery tables. Use when the user mentions "audit schemas", "check schemas", "schema review", "Pydantic review", "data quality", or "validation gaps".'
@@ -311,8 +311,8 @@ Pesquise e audite todos os schemas Pydantic do repositório.
 
 1. Liste todos os arquivos em `schemas/` com Glob
 2. Leia cada schema `.py` encontrado
-3. Liste todos os jobs em `etl-monorepo/jobs/` e leia cada `main.py`
-4. Leia `etl-monorepo/jobs/job_template/main.py` como baseline
+3. Liste todos os jobs em `aulao-1-ia-em-producao/etl-monorepo/jobs/` e leia cada `main.py`
+4. Leia `aulao-1-ia-em-producao/etl-monorepo/jobs/job_template/main.py` como baseline
 5. Grep por `BaseModel` em todo o repositório para encontrar schemas inline
 6. Consulte `references/bigquery-pydantic-types.md` para mapeamento de tipos
 
@@ -365,8 +365,8 @@ EOF
 # ============================================================
 # 6. MONOREPO NESTING: schema-audit/references
 # ============================================================
-echo "6/9  etl-monorepo/.claude/skills/schema-audit/references/bigquery-pydantic-types.md"
-cat > etl-monorepo/.claude/skills/schema-audit/references/bigquery-pydantic-types.md << 'EOF'
+echo "6/9  aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/references/bigquery-pydantic-types.md"
+cat > aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/references/bigquery-pydantic-types.md << 'EOF'
 # Mapeamento Pydantic → BigQuery Types
 
 Use esta referência para verificar compatibilidade entre schemas Pydantic e tipos BigQuery.
@@ -397,10 +397,10 @@ EOF
 # ============================================================
 # 7. MONOREPO NESTING: observability-review
 # ============================================================
-echo "7/9  etl-monorepo/.claude/skills/observability-review/SKILL.md"
-mkdir -p etl-monorepo/.claude/skills/observability-review/references
+echo "7/9  aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/SKILL.md"
+mkdir -p aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/references
 
-cat > etl-monorepo/.claude/skills/observability-review/SKILL.md << 'EOF'
+cat > aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/SKILL.md << 'EOF'
 ---
 name: observability-review
 description: 'Reviews all ETL jobs for structured logging compliance and observability best practices. Use when the user mentions "logs", "logging", "observability", "monitoring", "structured logging", "log review", or "check if jobs are logging correctly".'
@@ -421,7 +421,7 @@ event, job, timestamp, valid_records, dlq_records, duration_seconds, success.
 
 ## Investigação
 
-1. Liste todos os jobs em `etl-monorepo/jobs/`
+1. Liste todos os jobs em `aulao-1-ia-em-producao/etl-monorepo/jobs/`
 2. Leia cada `main.py`
 3. Grep por `print(json.dumps` e `logging` em todos os jobs
 4. Leia `observability/` para configurações adicionais
@@ -465,8 +465,8 @@ EOF
 # ============================================================
 # 8. MONOREPO NESTING: observability-review/references
 # ============================================================
-echo "8/9  etl-monorepo/.claude/skills/observability-review/references/logging-spec.md"
-cat > etl-monorepo/.claude/skills/observability-review/references/logging-spec.md << 'EOF'
+echo "8/9  aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/references/logging-spec.md"
+cat > aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/references/logging-spec.md << 'EOF'
 # Logging Specification — ETL Monorepo
 
 ## Formato
@@ -606,11 +606,11 @@ echo "   .claude/skills/create-etl-job/SKILL.md"
 echo "   .claude/skills/create-etl-job/scripts/log_template.py"
 echo "   .claude/skills/terraform-review/SKILL.md"
 echo ""
-echo " MONOREPO NESTING (ativa só dentro de etl-monorepo/):"
-echo "   etl-monorepo/.claude/skills/schema-audit/SKILL.md"
-echo "   etl-monorepo/.claude/skills/schema-audit/references/bigquery-pydantic-types.md"
-echo "   etl-monorepo/.claude/skills/observability-review/SKILL.md"
-echo "   etl-monorepo/.claude/skills/observability-review/references/logging-spec.md"
+echo " MONOREPO NESTING (ativa só dentro de aulao-1-ia-em-producao/etl-monorepo/):"
+echo "   aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/SKILL.md"
+echo "   aulao-1-ia-em-producao/etl-monorepo/.claude/skills/schema-audit/references/bigquery-pydantic-types.md"
+echo "   aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/SKILL.md"
+echo "   aulao-1-ia-em-producao/etl-monorepo/.claude/skills/observability-review/references/logging-spec.md"
 echo ""
 echo " USER-LEVEL (cross-project, pessoal):"
 echo "   ~/.claude/skills/codebase-explorer/SKILL.md"
