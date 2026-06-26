@@ -1,0 +1,6 @@
+rule_id,rule_type,expression,description,severity
+rule_stage_order,event_sequence,Eventos devem respeitar a ordem: cadastro → onboarding_inicio → onboarding_completo → ativacao → exportacao.,"Se o usuário tem uma etapa posterior, deveria ter as anteriores.",warning
+rule_metric_denominator,metric_definition,Taxas de etapa usam usuários cadastrados como denominador padrão.,Evita confundir percentual sobre eventos com percentual sobre usuários.,critical
+rule_segment_before_conclusion,analysis,Toda métrica de funil deve ser primeiro analisada por plano e device.,Regra semântica central da demo: o agregado pode mentir.,critical
+rule_device_required,data_quality,device deveria estar preenchido para todo usuário.,Há valores nulos no CSV; trate como unknown ou exclua em análise específica.,warning
+rule_timestamp_mixed_formats,data_quality,timestamp precisa ser normalizado antes de análises temporais.,O arquivo contém múltiplos formatos de data/hora e alguns nulos.,warning

@@ -1,0 +1,28 @@
+source_id,relation,target_id,confidence,description
+entity_user,HAS_DIMENSION,dim_plano,1.0,Todo usuário pertence a um plano.
+entity_user,HAS_DIMENSION,dim_device,1.0,Todo usuário deveria ter um device; há nulos no CSV.
+entity_user,EMITS,entity_event,1.0,Usuários emitem eventos de funil.
+stage_onboarding_inicio,HAPPENS_AFTER,stage_cadastro,1.0,Onboarding iniciado deve acontecer depois do cadastro.
+stage_onboarding_completo,HAPPENS_AFTER,stage_onboarding_inicio,1.0,Onboarding completo deve acontecer depois do início do onboarding.
+stage_ativacao,HAPPENS_AFTER,stage_onboarding_completo,1.0,Ativação deve acontecer depois do onboarding completo.
+stage_exportacao,HAPPENS_AFTER,stage_ativacao,1.0,Exportação deve acontecer depois da ativação.
+metric_onboarding_inicio_rate,NUMERATOR_IS,stage_onboarding_inicio,1.0,Numerador: usuários que chegaram em onboarding_inicio.
+metric_onboarding_inicio_rate,DENOMINATOR_IS,stage_cadastro,1.0,Denominador: usuários cadastrados.
+metric_onboarding_inicio_rate,SHOULD_SEGMENT_BY,dim_plano,1.0,Plano muda muito a interpretação da conversão.
+metric_onboarding_inicio_rate,SHOULD_SEGMENT_BY,dim_device,0.9,Device pode indicar fricção de produto ou canal.
+metric_onboarding_completo_rate,NUMERATOR_IS,stage_onboarding_completo,1.0,Numerador: usuários que concluíram onboarding.
+metric_onboarding_completo_rate,DENOMINATOR_IS,stage_cadastro,1.0,Denominador: usuários cadastrados.
+metric_onboarding_completo_rate,SHOULD_SEGMENT_BY,dim_plano,1.0,"Sem segmentar por plano, o agregado esconde o problema dos usuários free."
+metric_onboarding_completo_rate,SHOULD_SEGMENT_BY,dim_device,0.9,Ajuda a separar problema de perfil de usuário de problema de experiência.
+metric_ativacao_rate,NUMERATOR_IS,stage_ativacao,1.0,Numerador: usuários ativados.
+metric_ativacao_rate,DENOMINATOR_IS,stage_cadastro,1.0,Denominador: usuários cadastrados.
+metric_ativacao_rate,SHOULD_SEGMENT_BY,dim_plano,1.0,Ativação varia fortemente entre free e pro.
+metric_ativacao_rate,SHOULD_SEGMENT_BY,dim_device,0.9,Device ajuda a localizar fricção.
+metric_exportacao_rate,NUMERATOR_IS,stage_exportacao,1.0,Numerador: usuários que exportaram.
+metric_exportacao_rate,DENOMINATOR_IS,stage_cadastro,1.0,Denominador: usuários cadastrados.
+metric_exportacao_rate,SHOULD_SEGMENT_BY,dim_plano,1.0,Exportação muda de padrão entre free e pro.
+metric_exportacao_rate,SHOULD_SEGMENT_BY,dim_device,1.0,Ponto-chave: Pro em mobile parece travar em exportação.
+metric_transicao_ativacao_exportacao,NUMERATOR_IS,stage_exportacao,1.0,Numerador: usuários que exportaram.
+metric_transicao_ativacao_exportacao,DENOMINATOR_IS,stage_ativacao,1.0,Denominador: usuários ativados.
+metric_transicao_ativacao_exportacao,SHOULD_SEGMENT_BY,dim_plano,1.0,Transição precisa ser vista por plano.
+metric_transicao_ativacao_exportacao,SHOULD_SEGMENT_BY,dim_device,1.0,Transição precisa ser vista por device.

@@ -1,0 +1,16 @@
+node_id,node_type,label,physical_ref,description
+entity_user,entity,Usuário,dim_usuario.user_id,Grão principal da análise: um usuário único no funil.
+entity_event,entity,Evento do funil,silver_funnel_eventos.etapa,Linha de evento emitida por usuário em uma etapa do funil.
+dim_plano,dimension,Plano,dim_usuario.plano,Dimensão de negócio que separa usuários free e pro.
+dim_device,dimension,Device,dim_usuario.device,"Dimensão técnica/comportamental: web, ios ou android."
+dim_event_date,dimension,Data do evento,silver_funnel_eventos.event_ts,Data/hora normalizada do evento. O CSV original mistura formatos.
+stage_cadastro,stage,Cadastro,etapa = 'cadastro',Primeira etapa do funil. Todo usuário esperado deve ter cadastro.
+stage_onboarding_inicio,stage,Onboarding iniciado,etapa = 'onboarding_inicio',Usuário iniciou o onboarding.
+stage_onboarding_completo,stage,Onboarding completo,etapa = 'onboarding_completo',Usuário concluiu o onboarding. É o evento de sucesso da métrica principal do aulão.
+stage_ativacao,stage,Ativação,etapa = 'ativacao',Usuário chegou à ativação.
+stage_exportacao,stage,Exportação,etapa = 'exportacao',Usuário concluiu exportação. Ajuda a revelar o problema de Pro no mobile.
+metric_onboarding_inicio_rate,metric,Taxa de início de onboarding,mart_funnel_segmentado.pct_onboarding_inicio,Usuários com onboarding_inicio dividido por usuários cadastrados.
+metric_onboarding_completo_rate,metric,Taxa de onboarding completo,mart_funnel_segmentado.pct_onboarding_completo,Usuários com onboarding_completo dividido por usuários cadastrados.
+metric_ativacao_rate,metric,Taxa de ativação,mart_funnel_segmentado.pct_ativacao,Usuários com ativacao dividido por usuários cadastrados.
+metric_exportacao_rate,metric,Taxa de exportação,mart_funnel_segmentado.pct_exportacao,Usuários com exportacao dividido por usuários cadastrados.
+metric_transicao_ativacao_exportacao,metric,Conversão ativação → exportação,mart_funnel_segmentado.trans_ativacao_to_exportacao,Usuários com exportacao dividido por usuários com ativacao.

@@ -1,0 +1,6 @@
+metric_id,label,numerator_node,denominator_node,grain,default_segments,business_question,interpretation_warning
+metric_onboarding_inicio_rate,Taxa de início de onboarding,stage_onboarding_inicio,stage_cadastro,user_id,"plano, device","Responde: dos usuários cadastrados, quantos iniciaram onboarding?",Não analisar só agregado; segmentar por plano e device.
+metric_onboarding_completo_rate,Taxa de onboarding completo,stage_onboarding_completo,stage_cadastro,user_id,"plano, device","Responde: dos usuários cadastrados, quantos concluíram onboarding?",Métrica principal para mostrar que o agregado esconde o problema de Free.
+metric_ativacao_rate,Taxa de ativação,stage_ativacao,stage_cadastro,user_id,"plano, device","Responde: dos usuários cadastrados, quantos ativaram?",Comparar com onboarding_completo para identificar queda após onboarding.
+metric_exportacao_rate,Taxa de exportação,stage_exportacao,stage_cadastro,user_id,"plano, device","Responde: dos usuários cadastrados, quantos exportaram?",Boa para revelar queda de Pro mobile na etapa final.
+metric_transicao_ativacao_exportacao,Conversão ativação → exportação,stage_exportacao,stage_ativacao,user_id,"plano, device","Responde: dos usuários ativados, quantos exportaram?",Essa transição mostra com clareza o gargalo em mobile para usuários pro.

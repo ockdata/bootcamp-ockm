@@ -1,0 +1,19 @@
+graph LR
+    U["Entidade: Usuário"] -->|"tem dimensão"| P["Dimensão: Plano"]
+    U -->|"tem dimensão"| D["Dimensão: Device"]
+    U -->|"emite"| E["Evento do funil"]
+
+    C["Cadastro"] --> OI["Onboarding iniciado"]
+    OI --> OC["Onboarding completo"]
+    OC --> A["Ativação"]
+    A --> X["Exportação"]
+
+    M1["Métrica: Taxa onboarding completo"] -->|"numerador"| OC
+    M1 -->|"denominador"| C
+    M1 -->|"segmentar por"| P
+    M1 -->|"segmentar por"| D
+
+    M2["Métrica: Ativação → Exportação"] -->|"numerador"| X
+    M2 -->|"denominador"| A
+    M2 -->|"segmentar por"| P
+    M2 -->|"segmentar por"| D

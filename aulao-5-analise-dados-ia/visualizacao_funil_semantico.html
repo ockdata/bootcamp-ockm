@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visualizacao do funil semantico</title>
+  <style>
+    :root {
+      --bg: #f6f8f9;
+      --surface: #ffffff;
+      --surface-2: #eef3f4;
+      --ink: #1b242c;
+      --muted: #60707d;
+      --line: #d6dee3;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --rose: #be123c;
+      --green: #15803d;
+      --shadow: 0 18px 40px rgba(30, 41, 59, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(1280px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: 14px;
+      letter-spacing: 0;
+      color: var(--muted);
+      font-weight: 650;
+      text-transform: uppercase;
+    }
+
+    .subhead {
+      max-width: 760px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 10px;
+      min-width: 290px;
+    }
+
+    .metric-card,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .metric-card {
+      padding: 14px 16px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 760;
+      line-height: 1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .panel-note {
+      max-width: 420px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .funnel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stage-row {
+      display: grid;
+      grid-template-columns: 168px minmax(160px, 1fr) 92px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .stage-name {
+      font-weight: 700;
+    }
+
+    .stage-count {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .track {
+      height: 34px;
+      background: var(--surface-2);
+      border: 1px solid #dfe7eb;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      min-width: 3px;
+      border-radius: 5px;
+    }
+
+    .fill-cadastro {
+      width: 100%;
+      background: var(--teal);
+    }
+
+    .fill-onboarding-inicio {
+      width: 61.4%;
+      background: var(--blue);
+    }
+
+    .fill-onboarding-completo {
+      width: 35.3%;
+      background: var(--amber);
+    }
+
+    .fill-ativacao {
+      width: 26.5%;
+      background: #7c3aed;
+    }
+
+    .fill-exportacao {
+      width: 12.2%;
+      background: var(--rose);
+    }
+
+    .pct {
+      font-variant-numeric: tabular-nums;
+      font-weight: 760;
+      text-align: right;
+    }
+
+    .rule-strip {
+      margin-top: 16px;
+      border-left: 5px solid var(--rose);
+      background: #fff7f8;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #7f1d1d;
+      font-weight: 690;
+    }
+
+    .graph-wrap {
+      width: 100%;
+      overflow: auto;
+      padding-bottom: 4px;
+    }
+
+    svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .node rect {
+      fill: #fff;
+      stroke: #cbd5dd;
+      stroke-width: 1.4;
+      rx: 7;
+    }
+
+    .node.entity rect {
+      stroke: var(--teal);
+      fill: #ecfdf5;
+    }
+
+    .node.dimension rect {
+      stroke: var(--blue);
+      fill: #eff6ff;
+    }
+
+    .node.stage rect {
+      stroke: var(--amber);
+      fill: #fff7ed;
+    }
+
+    .node.metric rect {
+      stroke: var(--rose);
+      fill: #fff1f2;
+    }
+
+    .node text {
+      fill: var(--ink);
+      font-size: 13px;
+      font-weight: 710;
+    }
+
+    .edge {
+      fill: none;
+      stroke: #83929f;
+      stroke-width: 1.8;
+      marker-end: url(#arrow);
+    }
+
+    .edge-label {
+      fill: var(--muted);
+      font-size: 10.5px;
+      font-weight: 720;
+      paint-order: stroke;
+      stroke: var(--surface);
+      stroke-linejoin: round;
+      stroke-width: 7px;
+    }
+
+    .segments {
+      display: grid;
+      gap: 10px;
+    }
+
+    .segment-row {
+      display: grid;
+      grid-template-columns: 108px 74px minmax(180px, 1fr) minmax(180px, 1fr) 88px;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .segment-row.problem-onboarding {
+      border-left: 5px solid var(--amber);
+    }
+
+    .segment-row.problem-export {
+      border-left: 5px solid var(--rose);
+    }
+
+    .segment-title {
+      font-weight: 760;
+      text-transform: capitalize;
+    }
+
+    .segment-users {
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mini-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .mini-track {
+      height: 10px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .mini-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--green);
+    }
+
+    .mini-fill.onboarding-low {
+      background: var(--amber);
+    }
+
+    .mini-fill.export-low {
+      background: var(--rose);
+    }
+
+    .diagnosis {
+      font-size: 12px;
+      font-weight: 760;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .diagnosis.warn {
+      color: var(--amber);
+    }
+
+    .diagnosis.critical {
+      color: var(--rose);
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .takeaway {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .takeaway strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+
+    .takeaway span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      main {
+        width: min(100vw - 24px, 760px);
+        padding-top: 18px;
+      }
+
+      header,
+      .grid,
+      .takeaways {
+        grid-template-columns: 1fr;
+      }
+
+      .meta {
+        min-width: 0;
+      }
+
+      .panel-note {
+        text-align: left;
+      }
+
+      .panel-head {
+        display: grid;
+      }
+
+      .stage-row {
+        grid-template-columns: 1fr 72px;
+      }
+
+      .track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .segment-row {
+        grid-template-columns: 1fr 88px;
+      }
+
+      .segment-row > div:nth-child(3),
+      .segment-row > div:nth-child(4) {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Funil semantico</h1>
+        <p class="subhead">Acesso ao dado mostra o agregado. A camada semantica explica como interpretar a metrica antes de concluir.</p>
+      </div>
+      <section class="meta" aria-label="Metricas agregadas">
+        <div class="metric-card">
+          <div class="metric-label">Usuarios</div>
+          <div class="metric-value">40.000</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Eventos</div>
+          <div class="metric-value">94.130</div>
+        </div>
+      </section>
+    </header>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Funil agregado</h2>
+            <h3>Percentual sobre usuarios cadastrados</h3>
+          </div>
+          <p class="panel-note">O agregado esta correto, mas mistura problemas diferentes em um unico numero.</p>
+        </div>
+
+        <div class="funnel" aria-label="Funil agregado">
+          <div class="stage-row">
+            <div>
+              <div class="stage-name">Cadastro</div>
+              <div class="stage-count">40.000 usuarios</div>
+            </div>
+            <div class="track"><div class="fill fill-cadastro"></div></div>
+            <div class="pct">100,0%</div>
+          </div>
+          <div class="stage-row">
+            <div>
+              <div class="stage-name">Onboarding iniciado</div>
+              <div class="stage-count">24.549 usuarios</div>
+            </div>
+            <div class="track"><div class="fill fill-onboarding-inicio"></div></div>
+            <div class="pct">61,4%</div>
+          </div>
+          <div class="stage-row">
+            <div>
+              <div class="stage-name">Onboarding completo</div>
+              <div class="stage-count">14.113 usuarios</div>
+            </div>
+            <div class="track"><div class="fill fill-onboarding-completo"></div></div>
+            <div class="pct">35,3%</div>
+          </div>
+          <div class="stage-row">
+            <div>
+              <div class="stage-name">Ativacao</div>
+              <div class="stage-count">10.596 usuarios</div>
+            </div>
+            <div class="track"><div class="fill fill-ativacao"></div></div>
+            <div class="pct">26,5%</div>
+          </div>
+          <div class="stage-row">
+            <div>
+              <div class="stage-name">Exportacao</div>
+              <div class="stage-count">4.872 usuarios</div>
+            </div>
+            <div class="track"><div class="fill fill-exportacao"></div></div>
+            <div class="pct">12,2%</div>
+          </div>
+        </div>
+
+        <div class="rule-strip">Regra semantica: toda metrica de funil deve ser analisada por plano e device antes da conclusao.</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Grafo semantico</h2>
+            <h3>Metrica, denominador e segmentacoes</h3>
+          </div>
+          <p class="panel-note">A metrica deixa de ser uma coluna solta e passa a ter definicao operacional.</p>
+        </div>
+
+        <div class="graph-wrap">
+          <svg viewBox="0 0 820 520" role="img" aria-label="Grafo semantico do funil">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#83929f"></path>
+              </marker>
+            </defs>
+
+            <path class="edge" d="M168 84 C205 72 230 61 275 61"></path>
+            <text class="edge-label" x="188" y="44">tem dimensao</text>
+            <path class="edge" d="M168 92 C210 105 235 133 275 133"></path>
+            <text class="edge-label" x="188" y="137">tem dimensao</text>
+            <path class="edge" d="M168 103 C215 132 232 213 275 213"></path>
+            <text class="edge-label" x="205" y="189">emite</text>
+
+            <path class="edge" d="M152 370 L218 370"></path>
+            <path class="edge" d="M350 370 L420 370"></path>
+            <path class="edge" d="M552 370 L620 370"></path>
+            <text class="edge-label" x="170" y="355">depois</text>
+            <text class="edge-label" x="373" y="355">depois</text>
+            <text class="edge-label" x="574" y="355">depois</text>
+
+            <path class="edge" d="M570 104 C515 84 465 61 405 61"></path>
+            <text class="edge-label" x="463" y="52">segmentar</text>
+            <path class="edge" d="M570 126 C515 138 465 133 405 133"></path>
+            <text class="edge-label" x="463" y="151">segmentar</text>
+            <path class="edge" d="M652 158 C648 230 550 284 498 340"></path>
+            <text class="edge-label" x="590" y="246">numerador</text>
+            <path class="edge" d="M570 151 C450 226 236 282 96 340"></path>
+            <text class="edge-label" x="332" y="254">denominador</text>
+
+            <g class="node entity">
+              <rect x="40" y="56" width="128" height="60"></rect>
+              <text x="104" y="82" text-anchor="middle">Usuario</text>
+              <text x="104" y="101" text-anchor="middle">grao</text>
+            </g>
+
+            <g class="node dimension">
+              <rect x="275" y="34" width="130" height="54"></rect>
+              <text x="340" y="67" text-anchor="middle">Plano</text>
+            </g>
+            <g class="node dimension">
+              <rect x="275" y="106" width="130" height="54"></rect>
+              <text x="340" y="139" text-anchor="middle">Device</text>
+            </g>
+            <g class="node entity">
+              <rect x="275" y="186" width="142" height="58"></rect>
+              <text x="346" y="210" text-anchor="middle">Evento</text>
+              <text x="346" y="229" text-anchor="middle">do funil</text>
+            </g>
+
+            <g class="node metric">
+              <rect x="570" y="76" width="200" height="82"></rect>
+              <text x="670" y="103" text-anchor="middle">Taxa de</text>
+              <text x="670" y="122" text-anchor="middle">onboarding</text>
+              <text x="670" y="141" text-anchor="middle">completo</text>
+            </g>
+
+            <g class="node stage">
+              <rect x="40" y="340" width="112" height="60"></rect>
+              <text x="96" y="376" text-anchor="middle">Cadastro</text>
+            </g>
+            <g class="node stage">
+              <rect x="218" y="340" width="132" height="60"></rect>
+              <text x="284" y="363" text-anchor="middle">Onboarding</text>
+              <text x="284" y="382" text-anchor="middle">iniciado</text>
+            </g>
+            <g class="node stage">
+              <rect x="420" y="340" width="132" height="60"></rect>
+              <text x="486" y="363" text-anchor="middle">Onboarding</text>
+              <text x="486" y="382" text-anchor="middle">completo</text>
+            </g>
+            <g class="node stage">
+              <rect x="620" y="340" width="112" height="60"></rect>
+              <text x="676" y="376" text-anchor="middle">Ativacao</text>
+            </g>
+
+            <g class="node stage">
+              <rect x="620" y="440" width="112" height="60"></rect>
+              <text x="676" y="476" text-anchor="middle">Exportacao</text>
+            </g>
+            <path class="edge" d="M676 400 L676 440"></path>
+            <text class="edge-label" x="690" y="424">depois</text>
+          </svg>
+        </div>
+      </article>
+
+      <article class="panel full">
+        <div class="panel-head">
+          <div>
+            <h2>Diagnostico segmentado</h2>
+            <h3>Plano + device mudam a historia</h3>
+          </div>
+          <p class="panel-note">Free concentra queda de onboarding. Pro mobile concentra queda na exportacao depois da ativacao.</p>
+        </div>
+
+        <div class="segments">
+          <div class="segment-row problem-onboarding">
+            <div>
+              <div class="segment-title">free / android</div>
+              <div class="segment-users">7.257 usuarios</div>
+            </div>
+            <div class="diagnosis warn">onboarding</div>
+            <div>
+              <div class="mini-label"><span>Onboarding completo</span><span>26,3%</span></div>
+              <div class="mini-track"><div class="mini-fill onboarding-low" style="width: 26.3%"></div></div>
+            </div>
+            <div>
+              <div class="mini-label"><span>Ativacao para exportacao</span><span>53,4%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 53.4%"></div></div>
+            </div>
+            <div class="diagnosis">export. 8,9%</div>
+          </div>
+
+          <div class="segment-row problem-onboarding">
+            <div>
+              <div class="segment-title">free / ios</div>
+              <div class="segment-users">10.289 usuarios</div>
+            </div>
+            <div class="diagnosis warn">onboarding</div>
+            <div>
+              <div class="mini-label"><span>Onboarding completo</span><span>24,8%</span></div>
+              <div class="mini-track"><div class="mini-fill onboarding-low" style="width: 24.8%"></div></div>
+            </div>
+            <div>
+              <div class="mini-label"><span>Ativacao para exportacao</span><span>56,1%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 56.1%"></div></div>
+            </div>
+            <div class="diagnosis">export. 8,9%</div>
+          </div>
+
+          <div class="segment-row problem-onboarding">
+            <div>
+              <div class="segment-title">free / web</div>
+              <div class="segment-users">14.178 usuarios</div>
+            </div>
+            <div class="diagnosis warn">onboarding</div>
+            <div>
+              <div class="mini-label"><span>Onboarding completo</span><span>25,2%</span></div>
+              <div class="mini-track"><div class="mini-fill onboarding-low" style="width: 25.2%"></div></div>
+            </div>
+            <div>
+              <div class="mini-label"><span>Ativacao para exportacao</span><span>53,9%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 53.9%"></div></div>
+            </div>
+            <div class="diagnosis">export. 8,8%</div>
+          </div>
+
+          <div class="segment-row problem-export">
+            <div>
+              <div class="segment-title">pro / android</div>
+              <div class="segment-users">1.838 usuarios</div>
+            </div>
+            <div class="diagnosis critical">exportacao</div>
+            <div>
+              <div class="mini-label"><span>Onboarding completo</span><span>77,9%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 77.9%"></div></div>
+            </div>
+            <div>
+              <div class="mini-label"><span>Ativacao para exportacao</span><span>12,4%</span></div>
+              <div class="mini-track"><div class="mini-fill export-low" style="width: 12.4%"></div></div>
+            </div>
+            <div class="diagnosis">export. 8,7%</div>
+          </div>
+
+          <div class="segment-row problem-export">
+            <div>
+              <div class="segment-title">pro / ios</div>
+              <div class="segment-users">2.519 usuarios</div>
+            </div>
+            <div class="diagnosis critical">exportacao</div>
+            <div>
+              <div class="mini-label"><span>Onboarding completo</span><span>76,5%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 76.5%"></div></div>
+            </div>
+            <div>
+              <div class="mini-label"><span>Ativacao para exportacao</span><span>9,4%</span></div>
+              <div class="mini-track"><div class="mini-fill export-low" style="width: 9.4%"></div></div>
+            </div>
+            <div class="diagnosis">export. 6,5%</div>
+          </div>
+
+          <div class="segment-row">
+            <div>
+              <div class="segment-title">pro / web</div>
+              <div class="segment-users">3.592 usuarios</div>
+            </div>
+            <div class="diagnosis">referencia</div>
+            <div>
+              <div class="mini-label"><span>Onboarding completo</span><span>75,7%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 75.7%"></div></div>
+            </div>
+            <div>
+              <div class="mini-label"><span>Ativacao para exportacao</span><span>71,8%</span></div>
+              <div class="mini-track"><div class="mini-fill" style="width: 71.8%"></div></div>
+            </div>
+            <div class="diagnosis">export. 48,6%</div>
+          </div>
+        </div>
+      </article>
+
+      <section class="full takeaways" aria-label="Resumo interpretativo">
+        <div class="takeaway">
+          <strong>Acesso</strong>
+          <span>MCP permite consultar o warehouse e chegar no agregado.</span>
+        </div>
+        <div class="takeaway">
+          <strong>Semantica</strong>
+          <span>Define numerador, denominador, grao, segmentos e regra de leitura.</span>
+        </div>
+        <div class="takeaway">
+          <strong>Decisao</strong>
+          <span>O agregado vira dois diagnosticos: onboarding em Free e exportacao em Pro mobile.</span>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
